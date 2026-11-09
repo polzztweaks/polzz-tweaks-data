@@ -1,0 +1,1070 @@
+{
+ "categories": [
+  {
+   "id": "fps",
+   "name": "FPS & GPU"
+  },
+  {
+   "id": "input",
+   "name": "Input & delay"
+  },
+  {
+   "id": "mousekb",
+   "name": "Mouse & keyboard"
+  },
+  {
+   "id": "system",
+   "name": "System"
+  },
+  {
+   "id": "debloat",
+   "name": "Debloat"
+  },
+  {
+   "id": "privacy",
+   "name": "Privacy"
+  }
+ ],
+ "tweaks": [
+  {
+   "id": "game_mode",
+   "category": "fps",
+   "name": "Turn on Game Mode",
+   "description": "Windows prioritises the game you're playing and holds back updates and background work while it runs.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\GameBar",
+     "name": "AutoGameModeEnabled",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "game_dvr_off",
+   "category": "fps",
+   "name": "Turn off background game recording",
+   "description": "Stops Xbox Game Bar recording gameplay in the background, which costs GPU time every frame. You can still use other recorders like OBS or the NVIDIA app.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "System\\GameConfigStore",
+     "name": "GameDVR_Enabled",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR",
+     "name": "AppCaptureEnabled",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR",
+     "name": "AllowGameDVR",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "windowed_opt",
+   "category": "fps",
+   "name": "Optimisations for windowed games",
+   "description": "DirectX 10/11 games in windowed and borderless mode use the faster flip presentation model, for lower latency.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg_kv",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\DirectX\\UserGpuPreferences",
+     "name": "DirectXUserGlobalSettings",
+     "key": "SwapEffectUpgradeEnable",
+     "value": "1"
+    }
+   ]
+  },
+  {
+   "id": "hags",
+   "category": "fps",
+   "name": "Hardware-accelerated GPU scheduling",
+   "description": "The GPU schedules its own memory. Needed for DLSS Frame Generation. Helps on some PCs, does nothing on others.",
+   "risk": "tradeoff",
+   "needs": "reboot",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers",
+     "name": "HwSchMode",
+     "kind": "dword",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "id": "high_perf_power",
+   "category": "fps",
+   "name": "High Performance power plan",
+   "description": "The CPU stays at high clocks instead of ramping up when a game needs it. Uses more power, and laptops run warmer.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "power",
+     "scheme": "8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c"
+    }
+   ]
+  },
+  {
+   "id": "hvci_off",
+   "category": "fps",
+   "name": "Turn off Memory Integrity",
+   "description": "Memory Integrity (Core Isolation) costs about 5% FPS in many games; Microsoft itself suggests turning it off for gaming. It's a security feature, so you lose some protection against malicious drivers.",
+   "risk": "tradeoff",
+   "needs": "reboot",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity",
+     "name": "Enabled",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "fso_off",
+   "category": "fps",
+   "name": "Turn off fullscreen optimisations",
+   "description": "Games set to fullscreen run in true exclusive fullscreen. Can lower input lag in older DirectX 9/11 games; on Windows 11 often no difference, and Alt+Tab gets slower. Test it in your games.",
+   "risk": "tradeoff",
+   "needs": "signout",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "System\\GameConfigStore",
+     "name": "GameDVR_FSEBehaviorMode",
+     "kind": "dword",
+     "value": 2
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "System\\GameConfigStore",
+     "name": "GameDVR_HonorUserFSEBehaviorMode",
+     "kind": "dword",
+     "value": 1
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "System\\GameConfigStore",
+     "name": "GameDVR_FSEBehavior",
+     "kind": "dword",
+     "value": 2
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "System\\GameConfigStore",
+     "name": "GameDVR_DXGIHonorFSEWindowsCompatible",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "gpu_max_perf_pcie",
+   "category": "fps",
+   "name": "Keep the graphics card's connection awake",
+   "description": "Turns off PCI Express power saving, so the GPU and NVMe drives never wait to wake up their connection. Removes small stutters. Uses a little more power.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "powercfg",
+     "subgroup": "501a4d13-42af-4429-9fd1-a8218c268e20",
+     "setting": "ee12f906-d277-404b-b6da-e5fa1a576df5",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "mmcss_games",
+   "category": "input",
+   "name": "Higher priority for games",
+   "description": "Raises the priority Windows' multimedia scheduler gives games (CPU and disk). Only affects games that use the scheduler, so the effect is small, but it's harmless.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games",
+     "name": "Priority",
+     "kind": "dword",
+     "value": 6
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games",
+     "name": "Scheduling Category",
+     "kind": "sz",
+     "value": "High"
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games",
+     "name": "SFIO Priority",
+     "kind": "sz",
+     "value": "High"
+    }
+   ]
+  },
+  {
+   "id": "system_responsiveness",
+   "category": "input",
+   "name": "Reserve less CPU for background tasks",
+   "description": "Windows normally holds back 20% of CPU time for background work while media or games run. This lowers it to 10%.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile",
+     "name": "SystemResponsiveness",
+     "kind": "dword",
+     "value": 10
+    }
+   ]
+  },
+  {
+   "id": "power_throttling_off",
+   "category": "input",
+   "name": "Turn off power throttling",
+   "description": "Stops Windows slowing down apps in the background, so Discord, OBS and voice chat stay smooth while you play. On laptops, battery drains a bit faster.",
+   "risk": "tradeoff",
+   "needs": "reboot",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SYSTEM\\CurrentControlSet\\Control\\Power\\PowerThrottling",
+     "name": "PowerThrottlingOff",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "cpu_min_100",
+   "category": "input",
+   "name": "Keep the CPU at full speed when plugged in",
+   "description": "Sets the minimum CPU state to 100% on the current power plan, so it never has to ramp up from idle speed. Uses more power at idle.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "powercfg",
+     "subgroup": "54533251-82be-4824-96c1-47b60b740d00",
+     "setting": "893dee8e-2bef-41e0-89c6-b55d0929964c",
+     "value": 100
+    }
+   ]
+  },
+  {
+   "id": "menu_delay",
+   "category": "input",
+   "name": "Faster menus",
+   "description": "Menus open after 20 ms instead of 400 ms when you hover over them.",
+   "risk": "safe",
+   "needs": "signout",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Control Panel\\Desktop",
+     "name": "MenuShowDelay",
+     "kind": "sz",
+     "value": "20"
+    }
+   ]
+  },
+  {
+   "id": "mouse_accel_off",
+   "category": "mousekb",
+   "name": "Turn off mouse acceleration",
+   "description": "Turns off 'Enhance pointer precision', so the same hand movement always moves the cursor the same distance. Essential for consistent aim.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Control Panel\\Mouse",
+     "name": "MouseSpeed",
+     "kind": "sz",
+     "value": "0"
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Control Panel\\Mouse",
+     "name": "MouseThreshold1",
+     "kind": "sz",
+     "value": "0"
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Control Panel\\Mouse",
+     "name": "MouseThreshold2",
+     "kind": "sz",
+     "value": "0"
+    }
+   ],
+   "after": "refresh_mouse"
+  },
+  {
+   "id": "mouse_1to1",
+   "category": "mousekb",
+   "name": "Set Windows pointer speed to 1:1",
+   "description": "Puts the Windows sensitivity slider on 6/11, the only setting where Windows doesn't skip or add pixels. Set your speed with your mouse's DPI instead. Changes how fast your cursor feels.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Control Panel\\Mouse",
+     "name": "MouseSensitivity",
+     "kind": "sz",
+     "value": "10"
+    }
+   ],
+   "after": "refresh_mouse_speed"
+  },
+  {
+   "id": "usb_suspend_off",
+   "category": "mousekb",
+   "name": "Stop USB devices going to sleep",
+   "description": "Turns off USB selective suspend, so your mouse, keyboard and headset never fall asleep and lag on the first movement or key press.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "powercfg",
+     "subgroup": "2a737441-1930-4402-8d77-b2bebba308a3",
+     "setting": "48e6b7a6-50f5-4782-a5d4-53bb8f07e226",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "kb_fast_repeat",
+   "category": "mousekb",
+   "name": "Fastest key repeat",
+   "description": "A held key starts repeating sooner and repeats faster. Makes holding keys (backspace, arrows, movement in some games) feel snappier.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Control Panel\\Keyboard",
+     "name": "KeyboardDelay",
+     "kind": "sz",
+     "value": "0"
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Control Panel\\Keyboard",
+     "name": "KeyboardSpeed",
+     "kind": "sz",
+     "value": "31"
+    }
+   ],
+   "after": "refresh_keyboard"
+  },
+  {
+   "id": "sticky_keys_off",
+   "category": "mousekb",
+   "name": "Turn off the Sticky Keys popup",
+   "description": "Pressing Shift five times mid-game no longer pops up Sticky Keys and kicks you out of the game.",
+   "risk": "safe",
+   "needs": "signout",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Control Panel\\Accessibility\\StickyKeys",
+     "name": "Flags",
+     "kind": "sz",
+     "value": "506"
+    }
+   ]
+  },
+  {
+   "id": "filter_keys_off",
+   "category": "mousekb",
+   "name": "Turn off the Filter Keys popup",
+   "description": "Holding Right Shift for 8 seconds no longer turns on Filter Keys, which ignores quick key presses and adds delay.",
+   "risk": "safe",
+   "needs": "signout",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Control Panel\\Accessibility\\Keyboard Response",
+     "name": "Flags",
+     "kind": "sz",
+     "value": "122"
+    }
+   ]
+  },
+  {
+   "id": "toggle_keys_off",
+   "category": "mousekb",
+   "name": "Turn off the Toggle Keys popup",
+   "description": "Holding Num Lock for 5 seconds no longer pops up the Toggle Keys prompt.",
+   "risk": "safe",
+   "needs": "signout",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Control Panel\\Accessibility\\ToggleKeys",
+     "name": "Flags",
+     "kind": "sz",
+     "value": "58"
+    }
+   ]
+  },
+  {
+   "id": "lang_hotkey_off",
+   "category": "mousekb",
+   "name": "Stop Alt+Shift switching keyboard language",
+   "description": "Alt+Shift and Ctrl+Shift no longer change your keyboard language by accident mid-game. You can still switch with Windows key + Space.",
+   "risk": "tradeoff",
+   "needs": "signout",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Keyboard Layout\\Toggle",
+     "name": "Hotkey",
+     "kind": "sz",
+     "value": "3"
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Keyboard Layout\\Toggle",
+     "name": "Language Hotkey",
+     "kind": "sz",
+     "value": "3"
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Keyboard Layout\\Toggle",
+     "name": "Layout Hotkey",
+     "kind": "sz",
+     "value": "3"
+    }
+   ]
+  },
+  {
+   "id": "hibernate_off",
+   "category": "system",
+   "name": "Turn off hibernation and Fast Startup",
+   "description": "Deletes the hibernation file (often 10 GB or more) and turns off Fast Startup, which can keep drivers in a bad state between restarts. Boot takes a few seconds longer, and laptops can't hibernate.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "hibernate"
+    }
+   ]
+  },
+  {
+   "id": "disk_no_sleep",
+   "category": "system",
+   "name": "Stop hard drives sleeping",
+   "description": "Hard drives no longer spin down, which causes a freeze of a few seconds when they spin back up. No effect on SSDs.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "powercfg",
+     "subgroup": "0012ee47-9041-4b5d-9b77-535fba8b1442",
+     "setting": "6738e2c4-e8a5-4a42-b16a-e040e769756e",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "no_update_reboot",
+   "category": "system",
+   "name": "No surprise restarts from Windows Update",
+   "description": "Windows won't restart on its own to install updates while you're signed in. You restart when it suits you.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU",
+     "name": "NoAutoRebootWithLoggedOnUsers",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "do_p2p_off",
+   "category": "system",
+   "name": "Stop uploading updates to other PCs",
+   "description": "Windows stops sharing update files with other PCs over the internet, so it doesn't use your upload while you play.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization",
+     "name": "DODownloadMode",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "startup_delay_off",
+   "category": "system",
+   "name": "Remove the startup app delay",
+   "description": "Windows waits about 10 seconds after you sign in before starting startup apps. This removes the wait.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Serialize",
+     "name": "StartupDelayInMSec",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "transparency_off",
+   "category": "system",
+   "name": "Turn off transparency effects",
+   "description": "Turns off the see-through blur on the taskbar, Start and windows. Saves a little GPU time on weaker PCs.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+     "name": "EnableTransparency",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "animations_off",
+   "category": "system",
+   "name": "Turn off window animations",
+   "description": "Windows open, close and minimise instantly instead of animating. Makes the PC feel faster.",
+   "risk": "safe",
+   "needs": "signout",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Control Panel\\Desktop\\WindowMetrics",
+     "name": "MinAnimate",
+     "kind": "sz",
+     "value": "0"
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+     "name": "TaskbarAnimations",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "background_apps_off",
+   "category": "system",
+   "name": "Stop Store apps running in the background",
+   "description": "Microsoft Store apps can't run when they're closed. Saves memory and CPU. Some of them (Phone Link, Mail, Xbox app) won't send notifications while closed.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\AppPrivacy",
+     "name": "LetAppsRunInBackground",
+     "kind": "dword",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "id": "search_index_off",
+   "category": "system",
+   "name": "Turn off search indexing",
+   "description": "Stops Windows constantly scanning your files to build the search index, which uses disk and CPU. Searching files in Start and File Explorer gets slower.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "service",
+     "name": "WSearch",
+     "start": "disabled"
+    }
+   ]
+  },
+  {
+   "id": "print_spooler_off",
+   "category": "system",
+   "name": "Turn off the print service",
+   "description": "Stops the Print Spooler service. Only turn this on if you never print: printing won't work until you turn it back off.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "service",
+     "name": "Spooler",
+     "start": "disabled"
+    }
+   ]
+  },
+  {
+   "id": "sysmain_off",
+   "category": "debloat",
+   "name": "Turn off SysMain (Superfetch)",
+   "description": "SysMain preloads apps it expects you to open, which causes disk and memory churn mid-game. On a hard drive, app launches get a little slower.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "service",
+     "name": "SysMain",
+     "start": "disabled"
+    }
+   ]
+  },
+  {
+   "id": "copilot_off",
+   "category": "debloat",
+   "name": "Turn off Copilot",
+   "description": "Turns off the Windows Copilot sidebar by policy. On newer builds Copilot is a normal app; uninstall it in Settings > Apps.",
+   "risk": "safe",
+   "needs": "signout",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Policies\\Microsoft\\Windows\\WindowsCopilot",
+     "name": "TurnOffWindowsCopilot",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "widgets_off",
+   "category": "debloat",
+   "name": "Turn off Widgets",
+   "description": "The news and weather panel stops loading in the background.",
+   "risk": "safe",
+   "needs": "signout",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Dsh",
+     "name": "AllowNewsAndInterests",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "bing_start_off",
+   "category": "debloat",
+   "name": "Keep Bing out of Start search",
+   "description": "Start searches your PC and nothing else, so it's faster and never opens a browser by accident.",
+   "risk": "safe",
+   "needs": "signout",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Policies\\Microsoft\\Windows\\Explorer",
+     "name": "DisableSearchBoxSuggestions",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "search_highlights_off",
+   "category": "debloat",
+   "name": "Turn off search highlights",
+   "description": "Removes the daily pictures and trending topics from the search box and Start search.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings",
+     "name": "IsDynamicSearchBoxEnabled",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "recall_off",
+   "category": "debloat",
+   "name": "Turn off Recall",
+   "description": "Stops Windows taking periodic snapshots of your screen on Copilot+ PCs. Does nothing on other machines.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Policies\\Microsoft\\Windows\\WindowsAI",
+     "name": "DisableAIDataAnalysis",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "edge_bg_off",
+   "category": "debloat",
+   "name": "Stop Edge running when it's closed",
+   "description": "Turns off Startup Boost and background mode. Edge will show 'managed by your organisation' in its settings.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Edge",
+     "name": "StartupBoostEnabled",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Edge",
+     "name": "BackgroundModeEnabled",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "suggested_apps_off",
+   "category": "debloat",
+   "name": "Stop Windows installing suggested apps",
+   "description": "Windows stops silently installing sponsored apps and games (like Candy Crush) on your PC.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+     "name": "SilentInstalledAppsEnabled",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+     "name": "PreInstalledAppsEnabled",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+     "name": "OemPreInstalledAppsEnabled",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "tips_off",
+   "category": "debloat",
+   "name": "Turn off tips and suggestions",
+   "description": "No more suggestions in Start, Settings and pop-up tips about Windows features.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+     "name": "SubscribedContent-338388Enabled",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+     "name": "SubscribedContent-338389Enabled",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+     "name": "SubscribedContent-353694Enabled",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+     "name": "SubscribedContent-353696Enabled",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+     "name": "SystemPaneSuggestionsEnabled",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+     "name": "SoftLandingEnabled",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "lockscreen_ads_off",
+   "category": "debloat",
+   "name": "Turn off lock screen ads and fun facts",
+   "description": "Removes the tips, fun facts and promotions shown on the lock screen.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+     "name": "RotatingLockScreenOverlayEnabled",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+     "name": "SubscribedContent-338387Enabled",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "setup_nag_off",
+   "category": "debloat",
+   "name": "Stop 'Finish setting up your PC' screens",
+   "description": "Windows stops showing the full-screen 'Let's finish setting up your device' prompts after updates.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\UserProfileEngagement",
+     "name": "ScoobeSystemSettingEnabled",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "onedrive_off",
+   "category": "debloat",
+   "name": "Turn off OneDrive",
+   "description": "Stops OneDrive syncing and running in the background. Only do this if you don't use OneDrive: files in it stop backing up.",
+   "risk": "tradeoff",
+   "needs": "signout",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\OneDrive",
+     "name": "DisableFileSyncNGSC",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "telemetry_min",
+   "category": "privacy",
+   "name": "Send Microsoft the minimum diagnostic data",
+   "description": "Sets diagnostic data to the lowest level and turns off the Connected User Experiences service that uploads it.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+     "name": "AllowTelemetry",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "service",
+     "name": "DiagTrack",
+     "start": "disabled"
+    }
+   ]
+  },
+  {
+   "id": "ad_id_off",
+   "category": "privacy",
+   "name": "Turn off the advertising ID",
+   "description": "Apps can't use your advertising ID to show you personalised ads.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\AdvertisingInfo",
+     "name": "DisabledByGroupPolicy",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "activity_history_off",
+   "category": "privacy",
+   "name": "Turn off activity history",
+   "description": "Windows stops recording which apps and files you open and uploading it to Microsoft.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+     "name": "EnableActivityFeed",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+     "name": "PublishUserActivities",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+     "name": "UploadUserActivities",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "wer_off",
+   "category": "privacy",
+   "name": "Turn off error reporting",
+   "description": "Windows stops collecting and sending crash reports, and stops filling your disk with report files.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Error Reporting",
+     "name": "Disabled",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "location_off",
+   "category": "privacy",
+   "name": "Turn off location for all apps",
+   "description": "No app can use your location. Turn it back off if you need maps or 'Find my device'.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\location",
+     "name": "Value",
+     "kind": "sz",
+     "value": "Deny"
+    }
+   ]
+  }
+ ],
+ "version": 1,
+ "published": "2026-11-09"
+}
