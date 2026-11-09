@@ -13,8 +13,24 @@
    "name": "Mouse & keyboard"
   },
   {
+   "id": "network",
+   "name": "Network"
+  },
+  {
    "id": "system",
    "name": "System"
+  },
+  {
+   "id": "storage",
+   "name": "Storage"
+  },
+  {
+   "id": "security",
+   "name": "Security"
+  },
+  {
+   "id": "qol",
+   "name": "Quality of life"
   },
   {
    "id": "debloat",
@@ -205,6 +221,82 @@
    ]
   },
   {
+   "id": "cpu_epp_performance",
+   "category": "fps",
+   "name": "CPU energy preference: maximum performance",
+   "description": "Tells the CPU to favour speed over power saving (Intel 12th gen+ and Ryzen use this to decide how fast to ramp up). Snappier clocks in games, more power and heat at idle.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "powercfg",
+     "subgroup": "54533251-82be-4824-96c1-47b60b740d00",
+     "setting": "36687f9e-e3a5-4dbf-b1dc-15eb381c6863",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "cpu_boost_aggressive",
+   "category": "fps",
+   "name": "Aggressive CPU boost",
+   "description": "Lets the CPU jump to its boost clock as soon as a game asks for it, instead of waiting. Runs a little warmer.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "powercfg",
+     "subgroup": "54533251-82be-4824-96c1-47b60b740d00",
+     "setting": "be337238-0d82-4146-a960-4f3749d470c7",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "id": "gamebar_shortcuts_off",
+   "category": "fps",
+   "name": "Stop Game Bar popping up by accident",
+   "description": "The Xbox button on a controller no longer opens the Game Bar overlay mid-game, and its startup tips stop showing.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\GameBar",
+     "name": "UseNexusForGameBarEnabled",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\GameBar",
+     "name": "ShowStartupPanel",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "mpo_off",
+   "category": "fps",
+   "name": "Turn off Multiplane Overlay (MPO)",
+   "description": "NVIDIA's own fix for flickering, black screens or stutter when a browser, Discord or a video is open next to a game. Only turn on if you have those problems.",
+   "risk": "tradeoff",
+   "needs": "reboot",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows\\Dwm",
+     "name": "OverlayTestMode",
+     "kind": "dword",
+     "value": 5
+    }
+   ]
+  },
+  {
    "id": "mmcss_games",
    "category": "input",
    "name": "Higher priority for games",
@@ -305,6 +397,42 @@
      "name": "MenuShowDelay",
      "kind": "sz",
      "value": "20"
+    }
+   ]
+  },
+  {
+   "id": "notifications_off",
+   "category": "input",
+   "name": "Turn off notification pop-ups",
+   "description": "Stops Windows notification banners appearing over your game and stealing focus. You can still see them in the notification centre.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\PushNotifications",
+     "name": "ToastEnabled",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "timer_resolution_global",
+   "category": "input",
+   "name": "Consistent timer precision for games",
+   "description": "Windows 11 lowers timer precision for apps that aren't in front. This restores the older behaviour, which can steady frame pacing for FPS limiters and overlays. Uses slightly more power.",
+   "risk": "tradeoff",
+   "needs": "reboot",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel",
+     "name": "GlobalTimerResolutionRequests",
+     "kind": "dword",
+     "value": 1
     }
    ]
   },
@@ -494,31 +622,134 @@
    ]
   },
   {
-   "id": "hibernate_off",
-   "category": "system",
-   "name": "Turn off hibernation and Fast Startup",
-   "description": "Deletes the hibernation file (often 10 GB or more) and turns off Fast Startup, which can keep drivers in a bad state between restarts. Boot takes a few seconds longer, and laptops can't hibernate.",
-   "risk": "tradeoff",
+   "id": "aero_shake_off",
+   "category": "mousekb",
+   "name": "Turn off window shake",
+   "description": "Shaking a window while dragging it no longer minimises every other window.",
+   "risk": "safe",
    "needs": null,
    "actions": [
     {
-     "type": "hibernate"
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+     "name": "DisallowShaking",
+     "kind": "dword",
+     "value": 1
     }
    ]
   },
   {
-   "id": "disk_no_sleep",
-   "category": "system",
-   "name": "Stop hard drives sleeping",
-   "description": "Hard drives no longer spin down, which causes a freeze of a few seconds when they spin back up. No effect on SSDs.",
+   "id": "narrator_shortcut_off",
+   "category": "mousekb",
+   "name": "Turn off the Narrator shortcut",
+   "description": "Windows + Ctrl + Enter no longer starts Narrator talking over your game.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Narrator\\NoRoam",
+     "name": "WinEnterLaunchEnabled",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "access_shortcuts_off",
+   "category": "mousekb",
+   "name": "Turn off Mouse Keys and High Contrast shortcuts",
+   "description": "Left Alt + Left Shift + Num Lock (Mouse Keys) and Left Alt + Left Shift + Print Screen (High Contrast) no longer switch on by accident.",
+   "risk": "safe",
+   "needs": "signout",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Control Panel\\Accessibility\\MouseKeys",
+     "name": "Flags",
+     "kind": "sz",
+     "value": "58"
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Control Panel\\Accessibility\\HighContrast",
+     "name": "Flags",
+     "kind": "sz",
+     "value": "122"
+    }
+   ]
+  },
+  {
+   "id": "wifi_max_perf",
+   "category": "network",
+   "name": "Wi-Fi: maximum performance",
+   "description": "Turns off Wi-Fi power saving, which can cause ping spikes and lag in online games. No effect if you use a cable.",
    "risk": "safe",
    "needs": null,
    "actions": [
     {
      "type": "powercfg",
-     "subgroup": "0012ee47-9041-4b5d-9b77-535fba8b1442",
-     "setting": "6738e2c4-e8a5-4a42-b16a-e040e769756e",
+     "subgroup": "19cbb8fa-5279-450e-9fac-8a3d5fedd0c1",
+     "setting": "12bbebe6-58d6-4636-95bb-3217ef867c1a",
      "value": 0
+    }
+   ]
+  },
+  {
+   "id": "do_p2p_off",
+   "category": "network",
+   "name": "Stop uploading updates to other PCs",
+   "description": "Windows stops sharing update files with other PCs over the internet, so it doesn't use your upload while you play.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization",
+     "name": "DODownloadMode",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "update_bandwidth_limit",
+   "category": "network",
+   "name": "Limit background update downloads",
+   "description": "Windows Update can only use 20% of your internet speed while downloading in the background, so it doesn't cause lag or buffering while you play or stream. Updates take a bit longer.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization",
+     "name": "DOPercentageMaxBackgroundBandwidth",
+     "kind": "dword",
+     "value": 20
+    }
+   ]
+  },
+  {
+   "id": "encrypted_dns",
+   "category": "network",
+   "name": "Encrypt DNS automatically",
+   "description": "Website lookups are encrypted (DNS over HTTPS) when your DNS server supports it, such as Cloudflare 1.1.1.1, Google 8.8.8.8 or Quad9. Stops your internet provider seeing which sites you visit. No change with other DNS servers.",
+   "risk": "safe",
+   "needs": "reboot",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SYSTEM\\CurrentControlSet\\Services\\Dnscache\\Parameters",
+     "name": "EnableAutoDoh",
+     "kind": "dword",
+     "value": 2
     }
    ]
   },
@@ -537,24 +768,6 @@
      "name": "NoAutoRebootWithLoggedOnUsers",
      "kind": "dword",
      "value": 1
-    }
-   ]
-  },
-  {
-   "id": "do_p2p_off",
-   "category": "system",
-   "name": "Stop uploading updates to other PCs",
-   "description": "Windows stops sharing update files with other PCs over the internet, so it doesn't use your upload while you play.",
-   "risk": "safe",
-   "needs": null,
-   "actions": [
-    {
-     "type": "reg",
-     "hive": "HKLM",
-     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization",
-     "name": "DODownloadMode",
-     "kind": "dword",
-     "value": 0
     }
    ]
   },
@@ -665,6 +878,293 @@
      "type": "service",
      "name": "Spooler",
      "start": "disabled"
+    }
+   ]
+  },
+  {
+   "id": "no_wu_drivers",
+   "category": "system",
+   "name": "Stop Windows Update replacing drivers",
+   "description": "Windows Update stops installing its own (often older) graphics and other drivers over the ones you installed. You update drivers yourself with the NVIDIA app, AMD Adrenalin, etc.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+     "name": "ExcludeWUDriversInQualityUpdate",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "fast_shutdown",
+   "category": "system",
+   "name": "Faster shutdown",
+   "description": "Windows waits 2 seconds instead of 5 for background services to close when you shut down or restart.",
+   "risk": "tradeoff",
+   "needs": "reboot",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SYSTEM\\CurrentControlSet\\Control",
+     "name": "WaitToKillServiceTimeout",
+     "kind": "sz",
+     "value": "2000"
+    }
+   ]
+  },
+  {
+   "id": "hibernate_off",
+   "category": "storage",
+   "name": "Turn off hibernation and Fast Startup",
+   "description": "Deletes the hibernation file (often 10 GB or more) and turns off Fast Startup, which can keep drivers in a bad state between restarts. Boot takes a few seconds longer, and laptops can't hibernate.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "hibernate"
+    }
+   ]
+  },
+  {
+   "id": "disk_no_sleep",
+   "category": "storage",
+   "name": "Stop hard drives sleeping",
+   "description": "Hard drives no longer spin down, which causes a freeze of a few seconds when they spin back up. No effect on SSDs.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "powercfg",
+     "subgroup": "0012ee47-9041-4b5d-9b77-535fba8b1442",
+     "setting": "6738e2c4-e8a5-4a42-b16a-e040e769756e",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "storage_sense_on",
+   "category": "storage",
+   "name": "Clean junk automatically every month",
+   "description": "Turns on Windows Storage Sense: once a month it deletes temporary files apps aren't using. Your own files are never touched.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\StorageSense\\Parameters\\StoragePolicy",
+     "name": "01",
+     "kind": "dword",
+     "value": 1
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\StorageSense\\Parameters\\StoragePolicy",
+     "name": "2048",
+     "kind": "dword",
+     "value": 30
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\StorageSense\\Parameters\\StoragePolicy",
+     "name": "04",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "last_access_off",
+   "category": "storage",
+   "name": "Stop writing 'last opened' times",
+   "description": "Windows stops updating every file's 'last accessed' date each time it's read, which saves constant small disk writes. Small speed-up, mostly on hard drives.",
+   "risk": "safe",
+   "needs": "reboot",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SYSTEM\\CurrentControlSet\\Control\\FileSystem",
+     "name": "NtfsDisableLastAccessUpdate",
+     "kind": "dword",
+     "value": 2147483649
+    }
+   ]
+  },
+  {
+   "id": "show_file_ext",
+   "category": "security",
+   "name": "Show file extensions",
+   "description": "Shows .exe, .zip, .pdf etc. on file names, so you can spot fake files like 'photo.jpg.exe'.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+     "name": "HideFileExt",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "remote_assist_off",
+   "category": "security",
+   "name": "Turn off Remote Assistance",
+   "description": "Nobody can be invited to take control of your PC through Windows Remote Assistance, a common trick in tech-support scams.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SYSTEM\\CurrentControlSet\\Control\\Remote Assistance",
+     "name": "fAllowToGetHelp",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "pua_block",
+   "category": "security",
+   "name": "Block adware and junk installers",
+   "description": "Microsoft Defender blocks potentially unwanted apps: bundled toolbars, coin miners, fake optimisers and adware that sneak in with free downloads.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows Defender",
+     "name": "PUAProtection",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "autorun_off",
+   "category": "security",
+   "name": "Turn off AutoPlay for USB drives and discs",
+   "description": "Plugging in a USB stick no longer runs or opens anything by itself, which blocks a common way viruses spread.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+     "name": "NoDriveTypeAutoRun",
+     "kind": "dword",
+     "value": 255
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\AutoplayHandlers",
+     "name": "DisableAutoplay",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "llmnr_off",
+   "category": "security",
+   "name": "Turn off LLMNR",
+   "description": "Stops an old Windows name lookup that attackers on public Wi-Fi use to steal passwords. Nothing at home depends on it.",
+   "risk": "safe",
+   "needs": "reboot",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient",
+     "name": "EnableMulticast",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "wsh_off",
+   "category": "security",
+   "name": "Block script viruses (.vbs, .js)",
+   "description": "Turns off Windows Script Host, so double-clicking a .vbs or .js file from an email or download can't run it. A few old installers and school/work scripts need it.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows Script Host\\Settings",
+     "name": "Enabled",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "end_task_taskbar",
+   "category": "qol",
+   "name": "'End task' on the taskbar",
+   "description": "Right-click any app on the taskbar to force-close it, which is handy for a frozen game. No more opening Task Manager. Windows 11 23H2 or newer.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings",
+     "name": "TaskbarEndTask",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "alttab_windows_only",
+   "category": "qol",
+   "name": "Alt+Tab shows only windows",
+   "description": "Alt+Tab stops listing every Edge tab, so switching between your game, Discord and the browser is quicker.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+     "name": "MultiTaskingAltTabFilter",
+     "kind": "dword",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "id": "explorer_this_pc",
+   "category": "qol",
+   "name": "Open File Explorer to 'This PC'",
+   "description": "File Explorer opens on your drives instead of Home, so you get to your files and games faster.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+     "name": "LaunchTo",
+     "kind": "dword",
+     "value": 1
     }
    ]
   },
@@ -954,6 +1454,102 @@
    ]
   },
   {
+   "id": "start_recommendations_off",
+   "category": "debloat",
+   "name": "Clean up the Start menu",
+   "description": "Removes promoted apps, tips and Microsoft account reminders from the Start menu's Recommended area.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+     "name": "Start_IrisRecommendations",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+     "name": "Start_AccountNotifications",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "edge_extras_off",
+   "category": "debloat",
+   "name": "Turn off Edge sidebar, shopping and rewards",
+   "description": "Removes Edge's Copilot sidebar, shopping coupon pop-ups and Microsoft Rewards. Edge will show 'managed by your organisation'.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Edge",
+     "name": "HubsSidebarEnabled",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Edge",
+     "name": "EdgeShoppingAssistantEnabled",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Edge",
+     "name": "ShowMicrosoftRewards",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "explorer_ads_off",
+   "category": "debloat",
+   "name": "Turn off ads in File Explorer",
+   "description": "Stops OneDrive and Microsoft 365 promotions appearing at the top of File Explorer.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+     "name": "ShowSyncProviderNotifications",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "feedback_prompts_off",
+   "category": "debloat",
+   "name": "Stop feedback pop-ups",
+   "description": "Windows stops asking you to rate it or give feedback.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+     "name": "DoNotShowFeedbackNotifications",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
    "id": "telemetry_min",
    "category": "privacy",
    "name": "Send Microsoft the minimum diagnostic data",
@@ -1063,8 +1659,104 @@
      "value": "Deny"
     }
    ]
+  },
+  {
+   "id": "tailored_off",
+   "category": "privacy",
+   "name": "Turn off tailored experiences",
+   "description": "Microsoft stops using your diagnostic data to show you personalised tips, ads and recommendations.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Privacy",
+     "name": "TailoredExperiencesWithDiagnosticDataEnabled",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "online_speech_off",
+   "category": "privacy",
+   "name": "Turn off online speech recognition",
+   "description": "Your voice isn't sent to Microsoft's servers for recognition. Voice typing and dictation won't work.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Speech_OneCore\\Settings\\OnlineSpeechPrivacy",
+     "name": "HasAccepted",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "typing_data_off",
+   "category": "privacy",
+   "name": "Stop collecting typing and inking data",
+   "description": "Windows stops building a personal dictionary from what you type and write, and stops sending it to Microsoft.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\InputPersonalization",
+     "name": "RestrictImplicitInkCollection",
+     "kind": "dword",
+     "value": 1
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\InputPersonalization",
+     "name": "RestrictImplicitTextCollection",
+     "kind": "dword",
+     "value": 1
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\InputPersonalization\\TrainedDataStore",
+     "name": "HarvestContacts",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Personalization\\Settings",
+     "name": "AcceptedPrivacyPolicy",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "lang_list_off",
+   "category": "privacy",
+   "name": "Hide your language list from websites",
+   "description": "Websites can't read your list of Windows languages, which is used to fingerprint and track you.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Control Panel\\International\\User Profile",
+     "name": "HttpAcceptLanguageOptOut",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
   }
  ],
- "version": 1,
+ "version": 211,
  "published": "2026-11-09"
 }
