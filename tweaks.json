@@ -229,7 +229,7 @@
    "needs": null,
    "actions": [
     {
-     "type": "powercfg",
+     "type": "powercfg_hidden",
      "subgroup": "54533251-82be-4824-96c1-47b60b740d00",
      "setting": "36687f9e-e3a5-4dbf-b1dc-15eb381c6863",
      "value": 0
@@ -245,7 +245,7 @@
    "needs": null,
    "actions": [
     {
-     "type": "powercfg",
+     "type": "powercfg_hidden",
      "subgroup": "54533251-82be-4824-96c1-47b60b740d00",
      "setting": "be337238-0d82-4146-a960-4f3749d470c7",
      "value": 2
@@ -1757,6 +1757,6 @@
    ]
   }
  ],
- "version": 211,
+ "version": 260,
  "published": "2026-11-09"
 }
