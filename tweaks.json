@@ -13,8 +13,12 @@
    "name": "Mouse & keyboard"
   },
   {
+   "id": "games",
+   "name": "Games"
+  },
+  {
    "id": "network",
-   "name": "Network"
+   "name": "Network & ping"
   },
   {
    "id": "system",
@@ -297,6 +301,42 @@
    ]
   },
   {
+   "id": "vrr_windowed",
+   "category": "fps",
+   "name": "Variable refresh rate for windowed games",
+   "description": "Lets G-Sync / FreeSync work in borderless and windowed games too (Windows' own 'Variable refresh rate' switch). Smoother and no tearing if your monitor supports it.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg_kv",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\DirectX\\UserGpuPreferences",
+     "name": "DirectXUserGlobalSettings",
+     "key": "VRROptimizeEnable",
+     "value": "1"
+    }
+   ]
+  },
+  {
+   "id": "vbs_off",
+   "category": "fps",
+   "name": "Turn off Virtualization-Based Security",
+   "description": "VBS runs part of Windows inside a virtual machine for security, and Microsoft says it can cost games some FPS. Turning it off gives that back, with less protection against advanced malware. If a game's anti-cheat asks for it, turn this back off.",
+   "risk": "tradeoff",
+   "needs": "reboot",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SYSTEM\\CurrentControlSet\\Control\\DeviceGuard",
+     "name": "EnableVirtualizationBasedSecurity",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
    "id": "mmcss_games",
    "category": "input",
    "name": "Higher priority for games",
@@ -433,6 +473,22 @@
      "name": "GlobalTimerResolutionRequests",
      "kind": "dword",
      "value": 1
+    }
+   ]
+  },
+  {
+   "id": "usb_lpm_off",
+   "category": "input",
+   "name": "Turn off USB 3 power saving",
+   "description": "Stops USB 3 ports dropping into low-power states between inputs, which can add tiny delays to mice, keyboards and headsets plugged into them.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "powercfg_hidden",
+     "subgroup": "2a737441-1930-4402-8d77-b2bebba308a3",
+     "setting": "d4e98f31-5ffe-4ce1-be31-1b38b384c009",
+     "value": 0
     }
    ]
   },
@@ -684,6 +740,84 @@
    ]
   },
   {
+   "id": "game_fortnite",
+   "category": "games",
+   "name": "Fortnite: high CPU priority",
+   "description": "Windows always starts Fortnite with high CPU and disk priority, so background apps can't steal time from it. Discord and browsers still run, just at lower priority while Fortnite is open. This is a Windows setting, no game files are changed.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\FortniteClient-Win64-Shipping.exe\\PerfOptions",
+     "name": "CpuPriorityClass",
+     "kind": "dword",
+     "value": 3
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\FortniteClient-Win64-Shipping.exe\\PerfOptions",
+     "name": "IoPriority",
+     "kind": "dword",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "id": "game_cs2",
+   "category": "games",
+   "name": "Counter-Strike 2: high CPU priority",
+   "description": "Windows always starts Counter-Strike 2 with high CPU and disk priority, so background apps can't steal time from it. This is a Windows setting, no game files are changed.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\cs2.exe\\PerfOptions",
+     "name": "CpuPriorityClass",
+     "kind": "dword",
+     "value": 3
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\cs2.exe\\PerfOptions",
+     "name": "IoPriority",
+     "kind": "dword",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "id": "game_rocketleague",
+   "category": "games",
+   "name": "Rocket League: high CPU priority",
+   "description": "Windows always starts Rocket League with high CPU and disk priority, so background apps can't steal time from it. This is a Windows setting, no game files are changed.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\RocketLeague.exe\\PerfOptions",
+     "name": "CpuPriorityClass",
+     "kind": "dword",
+     "value": 3
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\RocketLeague.exe\\PerfOptions",
+     "name": "IoPriority",
+     "kind": "dword",
+     "value": 3
+    }
+   ]
+  },
+  {
    "id": "wifi_max_perf",
    "category": "network",
    "name": "Wi-Fi: maximum performance",
@@ -750,6 +884,79 @@
      "name": "EnableAutoDoh",
      "kind": "dword",
      "value": 2
+    }
+   ]
+  },
+  {
+   "id": "eee_off",
+   "category": "network",
+   "name": "Turn off Energy Efficient Ethernet",
+   "description": "Stops your network card putting the cable connection to sleep between packets. Waking it up can add small ping spikes. Your internet drops for a few seconds while it applies.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "netadv",
+     "keywords": [
+      "*EEE",
+      "AdvancedEEE",
+      "EEELinkAdvertisement"
+     ],
+     "value": "0"
+    }
+   ]
+  },
+  {
+   "id": "green_ethernet_off",
+   "category": "network",
+   "name": "Turn off Green Ethernet and Giga Lite",
+   "description": "Realtek network power-saving features that lower power on the cable and can cause ping spikes. Internet drops for a few seconds while it applies. Only on Realtek cards.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "netadv",
+     "keywords": [
+      "EnableGreenEthernet",
+      "GigaLite"
+     ],
+     "value": "0"
+    }
+   ]
+  },
+  {
+   "id": "nic_power_saving_off",
+   "category": "network",
+   "name": "Turn off network card power saving",
+   "description": "Stops the network card powering down parts of itself when traffic is low, which can cause lag spikes in online games. Internet drops for a few seconds while it applies.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "netadv",
+     "keywords": [
+      "PowerSavingMode",
+      "*SelectiveSuspend",
+      "ULPMode"
+     ],
+     "value": "0"
+    }
+   ]
+  },
+  {
+   "id": "interrupt_moderation_off",
+   "category": "network",
+   "name": "Turn off interrupt moderation",
+   "description": "The network card hands each packet to the CPU right away instead of grouping them, for the lowest possible network delay. Uses a little more CPU. Internet drops for a few seconds while it applies.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "netadv",
+     "keywords": [
+      "*InterruptModeration"
+     ],
+     "value": "0"
     }
    ]
   },
@@ -1757,6 +1964,6 @@
    ]
   }
  ],
- "version": 260,
+ "version": 317,
  "published": "2026-11-09"
 }
