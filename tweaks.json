@@ -961,6 +961,40 @@
    ]
   },
   {
+   "id": "wifi_roam_low",
+   "category": "network",
+   "name": "Wi-Fi: stop scanning for other networks",
+   "description": "Sets Roaming Aggressiveness to Lowest, so the Wi-Fi card stops scanning for other access points while you're connected. Those scans cause ping spikes. Right for a PC that doesn't move. Internet drops for a few seconds while it applies.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "netadv",
+     "keywords": [
+      "RegRoamLevel"
+     ],
+     "value": "1"
+    }
+   ]
+  },
+  {
+   "id": "wifi_mcc_off",
+   "category": "network",
+   "name": "Wi-Fi: turn off Multi-Channel Concurrent",
+   "description": "Stops the Wi-Fi card hopping between channels to serve a second connection (like a hotspot or screen casting) at the same time, which adds lag. Turning on a Mobile Hotspot from this PC may not work while it's off. Internet drops for a few seconds while it applies.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "netadv",
+     "keywords": [
+      "MCCSup"
+     ],
+     "value": "0"
+    }
+   ]
+  },
+  {
    "id": "no_update_reboot",
    "category": "system",
    "name": "No surprise restarts from Windows Update",
@@ -1964,6 +1998,6 @@
    ]
   }
  ],
- "version": 317,
+ "version": 318,
  "published": "2026-11-09"
 }
