@@ -167,48 +167,6 @@
    ]
   },
   {
-   "id": "fso_off",
-   "category": "fps",
-   "name": "Turn off fullscreen optimisations",
-   "description": "Games set to fullscreen run in true exclusive fullscreen. Can lower input lag in older DirectX 9/11 games; on Windows 11 often no difference, and Alt+Tab gets slower. Test it in your games.",
-   "risk": "tradeoff",
-   "needs": "signout",
-   "actions": [
-    {
-     "type": "reg",
-     "hive": "HKCU",
-     "path": "System\\GameConfigStore",
-     "name": "GameDVR_FSEBehaviorMode",
-     "kind": "dword",
-     "value": 2
-    },
-    {
-     "type": "reg",
-     "hive": "HKCU",
-     "path": "System\\GameConfigStore",
-     "name": "GameDVR_HonorUserFSEBehaviorMode",
-     "kind": "dword",
-     "value": 1
-    },
-    {
-     "type": "reg",
-     "hive": "HKCU",
-     "path": "System\\GameConfigStore",
-     "name": "GameDVR_FSEBehavior",
-     "kind": "dword",
-     "value": 2
-    },
-    {
-     "type": "reg",
-     "hive": "HKCU",
-     "path": "System\\GameConfigStore",
-     "name": "GameDVR_DXGIHonorFSEWindowsCompatible",
-     "kind": "dword",
-     "value": 1
-    }
-   ]
-  },
-  {
    "id": "gpu_max_perf_pcie",
    "category": "fps",
    "name": "Keep the graphics card's connection awake",
@@ -283,24 +241,6 @@
    ]
   },
   {
-   "id": "mpo_off",
-   "category": "fps",
-   "name": "Turn off Multiplane Overlay (MPO)",
-   "description": "NVIDIA's own fix for flickering, black screens or stutter when a browser, Discord or a video is open next to a game. Only turn on if you have those problems.",
-   "risk": "tradeoff",
-   "needs": "reboot",
-   "actions": [
-    {
-     "type": "reg",
-     "hive": "HKLM",
-     "path": "SOFTWARE\\Microsoft\\Windows\\Dwm",
-     "name": "OverlayTestMode",
-     "kind": "dword",
-     "value": 5
-    }
-   ]
-  },
-  {
    "id": "vrr_windowed",
    "category": "fps",
    "name": "Variable refresh rate for windowed games",
@@ -337,54 +277,42 @@
    ]
   },
   {
-   "id": "mmcss_games",
-   "category": "input",
-   "name": "Higher priority for games",
-   "description": "Raises the priority Windows' multimedia scheduler gives games (CPU and disk). Only affects games that use the scheduler, so the effect is small, but it's harmless.",
-   "risk": "safe",
-   "needs": null,
+   "id": "kernel_shadow_stacks_off",
+   "category": "fps",
+   "name": "Turn off kernel shadow stacks",
+   "description": "A Windows 11 security check that runs on every function call inside drivers. Turning it off gives back a few percent of CPU time in games. Only matters if Windows switched it on (Core isolation > Kernel-mode Hardware-enforced Stack Protection). Some anti-cheats don't need it either way.",
+   "risk": "tradeoff",
+   "needs": "reboot",
    "actions": [
     {
      "type": "reg",
      "hive": "HKLM",
-     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games",
-     "name": "Priority",
+     "path": "SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\KernelShadowStacks",
+     "name": "Enabled",
      "kind": "dword",
-     "value": 6
-    },
-    {
-     "type": "reg",
-     "hive": "HKLM",
-     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games",
-     "name": "Scheduling Category",
-     "kind": "sz",
-     "value": "High"
-    },
-    {
-     "type": "reg",
-     "hive": "HKLM",
-     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games",
-     "name": "SFIO Priority",
-     "kind": "sz",
-     "value": "High"
+     "value": 0
     }
    ]
   },
   {
-   "id": "system_responsiveness",
-   "category": "input",
-   "name": "Reserve less CPU for background tasks",
-   "description": "Windows normally holds back 20% of CPU time for background work while media or games run. This lowers it to 10%.",
-   "risk": "safe",
+   "id": "ecores_full",
+   "category": "fps",
+   "name": "Intel E-cores: full speed",
+   "description": "On Intel 12th gen and newer (P-cores + E-cores), Windows keeps the small E-cores slow to save power, so game threads that land there run slower and cause stutters. This makes the E-cores ramp up like the P-cores. Shows as 'Not on your PC' on CPUs without this setting.",
+   "risk": "tradeoff",
    "needs": null,
    "actions": [
     {
-     "type": "reg",
-     "hive": "HKLM",
-     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile",
-     "name": "SystemResponsiveness",
-     "kind": "dword",
-     "value": 10
+     "type": "powercfg_hidden",
+     "subgroup": "54533251-82be-4824-96c1-47b60b740d00",
+     "setting": "36687f9e-e3a5-4dbf-b1dc-15eb381c6864",
+     "value": 0
+    },
+    {
+     "type": "powercfg_hidden",
+     "subgroup": "54533251-82be-4824-96c1-47b60b740d00",
+     "setting": "893dee8e-2bef-41e0-89c6-b55d0929964d",
+     "value": 100
     }
    ]
   },
@@ -455,24 +383,6 @@
      "name": "ToastEnabled",
      "kind": "dword",
      "value": 0
-    }
-   ]
-  },
-  {
-   "id": "timer_resolution_global",
-   "category": "input",
-   "name": "Consistent timer precision for games",
-   "description": "Windows 11 lowers timer precision for apps that aren't in front. This restores the older behaviour, which can steady frame pacing for FPS limiters and overlays. Uses slightly more power.",
-   "risk": "tradeoff",
-   "needs": "reboot",
-   "actions": [
-    {
-     "type": "reg",
-     "hive": "HKLM",
-     "path": "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel",
-     "name": "GlobalTimerResolutionRequests",
-     "kind": "dword",
-     "value": 1
     }
    ]
   },
@@ -740,6 +650,42 @@
    ]
   },
   {
+   "id": "win_g_off",
+   "category": "mousekb",
+   "name": "Win+G can't pop up in-game",
+   "description": "Stops an accidental Win+G (easy to hit next to WASD) from opening the Game Bar over your game and freezing your input for a second.",
+   "risk": "safe",
+   "needs": "signout",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+     "name": "DisabledHotkeys",
+     "kind": "sz",
+     "value": "G"
+    }
+   ]
+  },
+  {
+   "id": "prtscn_snip_off",
+   "category": "mousekb",
+   "name": "Print Screen key: no Snipping Tool popup",
+   "description": "Print Screen goes back to copying the screen instantly instead of opening the Snipping Tool overlay, which grabs your mouse and pulls you out of fullscreen games.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Control Panel\\Keyboard",
+     "name": "PrintScreenKeyForSnippingEnabled",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
    "id": "game_fortnite",
    "category": "games",
    "name": "Fortnite: high CPU priority",
@@ -818,6 +764,136 @@
    ]
   },
   {
+   "id": "game_apex",
+   "category": "games",
+   "name": "Apex Legends: high CPU priority",
+   "description": "Windows always starts Apex Legends (DirectX 11 and 12 versions) with high CPU and disk priority, so background apps can't steal time from it. This is a Windows setting, no game files are changed.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\r5apex.exe\\PerfOptions",
+     "name": "CpuPriorityClass",
+     "kind": "dword",
+     "value": 3
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\r5apex.exe\\PerfOptions",
+     "name": "IoPriority",
+     "kind": "dword",
+     "value": 3
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\r5apex_dx12.exe\\PerfOptions",
+     "name": "CpuPriorityClass",
+     "kind": "dword",
+     "value": 3
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\r5apex_dx12.exe\\PerfOptions",
+     "name": "IoPriority",
+     "kind": "dword",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "id": "game_roblox",
+   "category": "games",
+   "name": "Roblox: high CPU priority",
+   "description": "Windows always starts Roblox with high CPU and disk priority, so background apps can't steal time from it. This is a Windows setting, no game files are changed.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\RobloxPlayerBeta.exe\\PerfOptions",
+     "name": "CpuPriorityClass",
+     "kind": "dword",
+     "value": 3
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\RobloxPlayerBeta.exe\\PerfOptions",
+     "name": "IoPriority",
+     "kind": "dword",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "id": "game_overwatch",
+   "category": "games",
+   "name": "Overwatch 2: high CPU priority",
+   "description": "Windows always starts Overwatch 2 with high CPU and disk priority, so background apps can't steal time from it. This is a Windows setting, no game files are changed.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\Overwatch.exe\\PerfOptions",
+     "name": "CpuPriorityClass",
+     "kind": "dword",
+     "value": 3
+    },
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\Overwatch.exe\\PerfOptions",
+     "name": "IoPriority",
+     "kind": "dword",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "id": "discord_low_priority",
+   "category": "games",
+   "name": "Discord: lower CPU priority",
+   "description": "Discord always starts below normal priority, so its overlay, video and animated emojis give CPU time to your game first. Voice still works fine; Discord may feel a bit slower while a game is running.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\Discord.exe\\PerfOptions",
+     "name": "CpuPriorityClass",
+     "kind": "dword",
+     "value": 5
+    }
+   ]
+  },
+  {
+   "id": "game_av_exclusions",
+   "category": "games",
+   "name": "Defender: don't scan game folders",
+   "description": "Microsoft Defender stops scanning the Steam, Epic Games and Riot Games install folders, which removes stutters when games load maps, shaders and textures. Only folders that exist on your PC are added. Downloaded games are still scanned when they arrive; anything else saved in those folders isn't.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "defender_exclusion",
+     "paths": [
+      "%ProgramFiles%\\Epic Games",
+      "%ProgramFiles(x86)%\\Steam\\steamapps\\common",
+      "%SystemDrive%\\Riot Games"
+     ]
+    }
+   ]
+  },
+  {
    "id": "wifi_max_perf",
    "category": "network",
    "name": "Wi-Fi: maximum performance",
@@ -866,24 +942,6 @@
      "name": "DOPercentageMaxBackgroundBandwidth",
      "kind": "dword",
      "value": 20
-    }
-   ]
-  },
-  {
-   "id": "encrypted_dns",
-   "category": "network",
-   "name": "Encrypt DNS automatically",
-   "description": "Website lookups are encrypted (DNS over HTTPS) when your DNS server supports it, such as Cloudflare 1.1.1.1, Google 8.8.8.8 or Quad9. Stops your internet provider seeing which sites you visit. No change with other DNS servers.",
-   "risk": "safe",
-   "needs": "reboot",
-   "actions": [
-    {
-     "type": "reg",
-     "hive": "HKLM",
-     "path": "SYSTEM\\CurrentControlSet\\Services\\Dnscache\\Parameters",
-     "name": "EnableAutoDoh",
-     "kind": "dword",
-     "value": 2
     }
    ]
   },
@@ -991,6 +1049,40 @@
       "MCCSup"
      ],
      "value": "0"
+    }
+   ]
+  },
+  {
+   "id": "wifi_5ghz",
+   "category": "network",
+   "name": "Wi-Fi: prefer 5 GHz",
+   "description": "Intel Wi-Fi cards connect to your router's faster, less crowded 5 GHz band instead of 2.4 GHz when both are available: lower ping and fewer lag spikes. Internet drops for a few seconds while it applies.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "netadv",
+     "keywords": [
+      "RoamingPreferredBandType"
+     ],
+     "value": "2"
+    }
+   ]
+  },
+  {
+   "id": "wifi_mimo_ps_off",
+   "category": "network",
+   "name": "Wi-Fi: no MIMO power saving",
+   "description": "Stops Intel Wi-Fi cards switching off antennas to save power, which causes ping spikes and lower speed. Uses a little more battery on laptops. Internet drops for a few seconds while it applies.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "netadv",
+     "keywords": [
+      "MIMOPowerSaveMode"
+     ],
+     "value": "3"
     }
    ]
   },
@@ -1159,6 +1251,24 @@
    ]
   },
   {
+   "id": "store_autoupdate_off",
+   "category": "system",
+   "name": "Microsoft Store: no background updates",
+   "description": "The Store stops downloading app updates in the background, which can hog your internet and disk while you play. Open the Store > Library > Get updates when you want them.",
+   "risk": "tradeoff",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\WindowsStore",
+     "name": "AutoDownload",
+     "kind": "dword",
+     "value": 2
+    }
+   ]
+  },
+  {
    "id": "hibernate_off",
    "category": "storage",
    "name": "Turn off hibernation and Fast Startup",
@@ -1218,24 +1328,6 @@
      "name": "04",
      "kind": "dword",
      "value": 1
-    }
-   ]
-  },
-  {
-   "id": "last_access_off",
-   "category": "storage",
-   "name": "Stop writing 'last opened' times",
-   "description": "Windows stops updating every file's 'last accessed' date each time it's read, which saves constant small disk writes. Small speed-up, mostly on hard drives.",
-   "risk": "safe",
-   "needs": "reboot",
-   "actions": [
-    {
-     "type": "reg",
-     "hive": "HKLM",
-     "path": "SYSTEM\\CurrentControlSet\\Control\\FileSystem",
-     "name": "NtfsDisableLastAccessUpdate",
-     "kind": "dword",
-     "value": 2147483649
     }
    ]
   },
@@ -1356,6 +1448,54 @@
    ]
   },
   {
+   "id": "lsa_protection",
+   "category": "security",
+   "name": "Protect saved passwords (LSA protection)",
+   "description": "Windows runs the process that holds your sign-in and saved passwords as a protected process, so password-stealing malware can't read it. On by default on new Windows 11 installs; this turns it on for older installs.",
+   "risk": "safe",
+   "needs": "reboot",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SYSTEM\\CurrentControlSet\\Control\\Lsa",
+     "name": "RunAsPPL",
+     "kind": "dword",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "id": "defender_network_protection",
+   "category": "security",
+   "name": "Block dangerous websites in every app",
+   "description": "Defender blocks connections to known scam, phishing and malware sites from any app (Discord links, game launchers, other browsers), not just Edge. Shows as 'Not on your PC' if another antivirus is in charge.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "mppref",
+     "name": "EnableNetworkProtection",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "defender_cloud_high",
+   "category": "security",
+   "name": "Defender: stronger cloud protection",
+   "description": "Defender is stricter when it checks new, unknown files with Microsoft's cloud, catching fresh malware (like fake cheats and 'free Robux' tools) that isn't in its list yet. Rarely, it may block a little-known program you trust; you can allow it in Windows Security.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "mppref",
+     "name": "CloudBlockLevel",
+     "value": 2
+    }
+   ]
+  },
+  {
    "id": "end_task_taskbar",
    "category": "qol",
    "name": "'End task' on the taskbar",
@@ -1410,6 +1550,61 @@
    ]
   },
   {
+   "id": "classic_context_menu",
+   "category": "qol",
+   "name": "Full right-click menu (no 'Show more options')",
+   "description": "Right-clicking files and the desktop shows the full menu straight away, like Windows 10, instead of the short Windows 11 menu with 'Show more options'.",
+   "risk": "safe",
+   "needs": "signout",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32",
+     "name": "",
+     "kind": "sz",
+     "value": "",
+     "own_key": "Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}"
+    }
+   ]
+  },
+  {
+   "id": "clipboard_history",
+   "category": "qol",
+   "name": "Clipboard history (Win+V)",
+   "description": "Win+V shows the last things you copied so you can paste any of them, not just the latest one. Stays on this PC only.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Clipboard",
+     "name": "EnableClipboardHistory",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "folder_discovery_off",
+   "category": "qol",
+   "name": "Faster folder opening",
+   "description": "Stops File Explorer guessing each folder's type (pictures, music...) by scanning its files, which makes big folders like Downloads open slowly. All folders open with the normal details view.",
+   "risk": "safe",
+   "needs": "signout",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\Bags\\AllFolders\\Shell",
+     "name": "FolderType",
+     "kind": "sz",
+     "value": "NotSpecified"
+    }
+   ]
+  },
+  {
    "id": "sysmain_off",
    "category": "debloat",
    "name": "Turn off SysMain (Superfetch)",
@@ -1421,24 +1616,6 @@
      "type": "service",
      "name": "SysMain",
      "start": "disabled"
-    }
-   ]
-  },
-  {
-   "id": "copilot_off",
-   "category": "debloat",
-   "name": "Turn off Copilot",
-   "description": "Turns off the Windows Copilot sidebar by policy. On newer builds Copilot is a normal app; uninstall it in Settings > Apps.",
-   "risk": "safe",
-   "needs": "signout",
-   "actions": [
-    {
-     "type": "reg",
-     "hive": "HKCU",
-     "path": "Software\\Policies\\Microsoft\\Windows\\WindowsCopilot",
-     "name": "TurnOffWindowsCopilot",
-     "kind": "dword",
-     "value": 1
     }
    ]
   },
@@ -1791,6 +1968,42 @@
    ]
   },
   {
+   "id": "smart_actions_off",
+   "category": "debloat",
+   "name": "Turn off clipboard 'suggested actions'",
+   "description": "Stops the little pop-up that appears when you copy a date or phone number, and the background scanning of what you copy.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SmartActionPlatform\\SmartClipboard",
+     "name": "Disabled",
+     "kind": "dword",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "encrypted_dns",
+   "category": "privacy",
+   "name": "Encrypt DNS automatically",
+   "description": "Website lookups are encrypted (DNS over HTTPS) when your DNS server supports it, such as Cloudflare 1.1.1.1, Google 8.8.8.8 or Quad9. Stops your internet provider seeing which sites you visit. No change with other DNS servers.",
+   "risk": "safe",
+   "needs": "reboot",
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SYSTEM\\CurrentControlSet\\Services\\Dnscache\\Parameters",
+     "name": "EnableAutoDoh",
+     "kind": "dword",
+     "value": 2
+    }
+   ]
+  },
+  {
    "id": "telemetry_min",
    "category": "privacy",
    "name": "Send Microsoft the minimum diagnostic data",
@@ -1996,8 +2209,88 @@
      "value": 1
     }
    ]
+  },
+  {
+   "id": "cloud_search_off",
+   "category": "privacy",
+   "name": "Search: don't search your Microsoft account",
+   "description": "Windows search stops sending what you type to your Microsoft, work or school account (OneDrive, Outlook, Bing). Results only come from this PC, and come faster.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings",
+     "name": "IsMSACloudSearchEnabled",
+     "kind": "dword",
+     "value": 0
+    },
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings",
+     "name": "IsAADCloudSearchEnabled",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "search_history_off",
+   "category": "privacy",
+   "name": "Search: don't keep search history",
+   "description": "Windows stops saving what you search for on this PC and suggesting it again.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKCU",
+     "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings",
+     "name": "IsDeviceSearchHistoryEnabled",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "cross_device_clipboard_off",
+   "category": "privacy",
+   "name": "Don't sync clipboard to other devices",
+   "description": "What you copy stays on this PC and isn't uploaded to your Microsoft account to sync with your other devices. Clipboard history (Win+V) still works.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+     "name": "AllowCrossDeviceClipboard",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "edge_personalization_off",
+   "category": "privacy",
+   "name": "Edge: no browsing-based ads",
+   "description": "Edge stops sending your browsing history to Microsoft to personalise ads, news and shopping suggestions.",
+   "risk": "safe",
+   "needs": null,
+   "actions": [
+    {
+     "type": "reg",
+     "hive": "HKLM",
+     "path": "SOFTWARE\\Policies\\Microsoft\\Edge",
+     "name": "PersonalizationReportingEnabled",
+     "kind": "dword",
+     "value": 0
+    }
+   ]
   }
  ],
- "version": 318,
- "published": "2026-11-09"
+ "version": 319,
+ "published": "2026-11-13"
 }
